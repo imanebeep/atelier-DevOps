@@ -1,3 +1,2 @@
-# atelier-DevOps
-Atelier 2 - Git
+Learning Git rebase in Atelier 2.
 Main branch updated during rebase exercise.
