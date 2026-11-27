@@ -14,7 +14,7 @@ export class App {
     return unusedVariable;
   }
   private buildError(): string {
-    const value: string = '123';
+    const value = '123';
     return value;
   }
 }
