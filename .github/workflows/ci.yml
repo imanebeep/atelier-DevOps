@@ -9,6 +9,11 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   build-and-test:
     name: build-and-test
@@ -38,5 +43,36 @@ jobs:
       - name: Run unit tests
         run: npm test -- --watch=false
 
+      - name: Create production environment
+        env:
+          SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          cat > src/environments/environment.prod.ts <<EOF
+          export const environment = {
+            production: true,
+            supabaseUrl: "${SUPABASE_URL}",
+            supabaseAnonKey: "${SUPABASE_ANON_KEY}"
+          };
+          EOF
+
       - name: Production build
-        run: npm run build -- --configuration production
+        run: npm run build -- --configuration production --base-href="/atelier-DevOps/"
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: angular-app/dist/angular-app
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
