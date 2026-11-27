@@ -13,4 +13,8 @@ export class App {
     const unusedVariable = 10;
     return unusedVariable;
   }
+  private buildError(): string {
+    const value: string = 123;
+    return value;
+  }
 }
