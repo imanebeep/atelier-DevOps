@@ -9,7 +9,6 @@ import { RouterOutlet } from '@angular/router';
 })
 export class App {
   protected readonly title = signal('angular-app');
-
   private testLintError(): number {
     const unusedVariable = 10;
     return unusedVariable;
